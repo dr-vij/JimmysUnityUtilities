@@ -31,10 +31,11 @@ namespace JimmysUnityUtilities
                 {
                     webRequest.SendWebRequest();
 
-                    while (!webRequest.isNetworkError && !webRequest.isDone)
+                    var isNetworkError = webRequest.result == UnityWebRequest.Result.ConnectionError;
+                    while (!isNetworkError && !webRequest.isDone)
                         yield return null;
 
-                    if (webRequest.isNetworkError)
+                    if (isNetworkError)
                     {
                         Debug.LogError($"Error loading audio at {filePath}!{Environment.NewLine}{webRequest.error}");
                         yield break;
@@ -80,10 +81,11 @@ namespace JimmysUnityUtilities
                     clipDownloader.streamAudio = true; // Due to a Unity bug this is actually totally non-functional... https://forum.unity.com/threads/downloadhandleraudioclip-streamaudio-is-ignored.699908/
 
                     webRequest.SendWebRequest();
-                    while (!webRequest.isNetworkError && webRequest.downloadedBytes < minDownloadedBytesWhenStreamingCanBegin)
+                    var isNetworkError = webRequest.result == UnityWebRequest.Result.ConnectionError;
+                    while (!isNetworkError && webRequest.downloadedBytes < minDownloadedBytesWhenStreamingCanBegin)
                         yield return null;
 
-                    if (webRequest.isNetworkError)
+                    if (isNetworkError)
                     {
                         Debug.LogError($"Error streaming music at {filePath}!{Environment.NewLine}{webRequest.error}");
                         yield break;
